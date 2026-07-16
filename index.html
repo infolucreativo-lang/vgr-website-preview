@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victor Gonzalez Racing | VGR</title>
+
+  <style>
+    :root {
+      --black: #050505;
+      --dark: #0b0b0d;
+      --red: #e50914;
+      --red-dark: #8b0008;
+      --white: #ffffff;
+      --gray: #b9b9b9;
+      --line: rgba(255,255,255,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 26px 7%;
+      background: linear-gradient(to bottom, rgba(0,0,0,.85), transparent);
+      transition: .35s ease;
+    }
+
+    .navbar.scrolled {
+      padding: 14px 7%;
+      background: rgba(5,5,5,.78);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo img { width: 135px; height: auto; transition: .35s ease; }
+    .navbar.scrolled .logo img { width: 95px; }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .nav-links a { position: relative; transition: .3s ease; }
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 0;
+      height: 2px;
+      background: var(--red);
+      transition: .3s ease;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 0 7%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 75% 45%, rgba(229,9,20,.25), transparent 35%),
+        linear-gradient(90deg, rgba(0,0,0,.98) 0%, rgba(0,0,0,.82) 45%, rgba(0,0,0,.28) 100%),
+        url("IMAGES/car-99-speed.jpeg") center/cover no-repeat;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: .25;
+      z-index: 1;
+    }
+
+    .hero::after {
+      content: "VGR";
+      position: absolute;
+      right: -6%;
+      bottom: -10%;
+      font-size: 26vw;
+      font-weight: 900;
+      color: rgba(255,255,255,.035);
+      z-index: 1;
+    }
+
+    .hero-content { position: relative; z-index: 3; max-width: 760px; padding-top: 80px; }
+    .eyebrow {
+      color: var(--red);
+      letter-spacing: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: clamp(58px, 9vw, 124px);
+      line-height: .88;
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: -4px;
+    }
+    h1 span {
+      color: var(--red);
+      display: block;
+      text-shadow: 0 0 35px rgba(229,9,20,.35);
+    }
+
+    .hero p {
+      margin: 30px 0;
+      max-width: 590px;
+      color: var(--gray);
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn {
+      padding: 16px 30px;
+      border: 1px solid var(--red);
+      background: var(--red);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 2px;
+      font-weight: 800;
+      transition: .3s ease;
+    }
+    .btn.secondary { background: rgba(255,255,255,.02); border-color: var(--line); }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 0 35px rgba(229,9,20,.45); }
+
+    .stats {
+      position: absolute;
+      bottom: 42px;
+      left: 7%;
+      right: 7%;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: rgba(10,10,10,.72);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .stat { padding: 26px; border-right: 1px solid var(--line); }
+    .stat:last-child { border-right: none; }
+    .stat strong { font-size: 38px; color: var(--red); display: block; }
+    .stat span { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 2px; }
+
+    section { padding: 110px 7%; position: relative; }
+    .section-title { font-size: 48px; text-transform: uppercase; margin-bottom: 50px; letter-spacing: -1px; }
+    .section-title span { color: var(--red); }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .card {
+      background: linear-gradient(180deg, #111, #070707);
+      border: 1px solid var(--line);
+      padding: 32px;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+      transition: .35s ease;
+    }
+    .card:hover { transform: translateY(-8px); border-color: var(--red); }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(229,9,20,.35), transparent 42%);
+      opacity: 0;
+      transition: .35s ease;
+    }
+    .card:hover::before { opacity: 1; }
+    .card h3, .card p { position: relative; z-index: 2; }
+    .card h3 { font-size: 26px; text-transform: uppercase; margin-bottom: 14px; }
+    .card p { color: var(--gray); line-height: 1.65; }
+
+    .team-feature {
+      margin-top: 55px;
+      min-height: 480px;
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      background:
+        linear-gradient(to top, rgba(0,0,0,.96), rgba(0,0,0,.15) 70%),
+        url("IMAGES/vgr-team.jpeg") center/cover no-repeat;
+    }
+    .team-feature-content { position: relative; z-index: 2; padding: 42px; max-width: 720px; }
+    .team-feature-content h3 { font-size: 38px; text-transform: uppercase; margin-bottom: 12px; }
+    .team-feature-content p { color: var(--gray); line-height: 1.7; }
+
+    .drivers { background: #080808; }
+    .drivers .grid { grid-template-columns: repeat(4, 1fr); }
+    .driver-card {
+      min-height: 500px;
+      background-size: cover;
+      background-position: center top;
+      display: flex;
+      align-items: flex-end;
+      padding: 26px;
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      transition: .35s ease;
+    }
+    .driver-card:hover { transform: scale(1.02); border-color: var(--red); }
+    .driver-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.98), rgba(0,0,0,.05) 70%);
+    }
+    .driver-info { position: relative; z-index: 2; }
+    .driver-info small { color: var(--red); font-weight: 900; letter-spacing: 2px; }
+    .driver-info h3 { font-size: 28px; text-transform: uppercase; }
+    .driver-info p { color: var(--gray); margin-top: 5px; }
+
+    .cars { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .car-box {
+      background: linear-gradient(135deg, #111, #050505);
+      border: 1px solid var(--line);
+      padding: 32px;
+      overflow: hidden;
+    }
+    .car-box h3 { font-size: 26px; text-transform: uppercase; margin-bottom: 12px; }
+    .car-box p { color: var(--gray); line-height: 1.6; }
+    .car-box img { width: 100%; height: 390px; object-fit: cover; margin-top: 22px; transition: .35s ease; }
+    .car-box:hover img { transform: scale(1.04); }
+
+    .race-feature {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 28px;
+    }
+    .race-feature-image, .race-feature-copy { border: 1px solid var(--line); min-height: 420px; }
+    .race-feature-image {
+      background: url("IMAGES/vgr-pit-lane.jpeg") center/cover no-repeat;
+    }
+    .race-feature-copy {
+      padding: 42px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: linear-gradient(135deg, #121212, #050505);
+    }
+    .race-feature-copy h3 { font-size: 38px; text-transform: uppercase; margin-bottom: 18px; }
+    .race-feature-copy p { color: var(--gray); line-height: 1.75; }
+
+    .schedule {
+      background:
+        linear-gradient(rgba(0,0,0,.90), rgba(0,0,0,.94)),
+        url("IMAGES/car-99-track.jpeg") center/cover no-repeat;
+    }
+    .schedule-list { display: grid; gap: 18px; }
+    .race-row {
+      display: grid;
+      grid-template-columns: 145px 1fr 190px;
+      gap: 28px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      align-items: center;
+      background: rgba(6,6,6,.72);
+      backdrop-filter: blur(12px);
+      transition: .3s ease;
+    }
+    .race-row:hover { border-color: var(--red); transform: translateY(-3px); }
+    .race-date strong { display: block; color: var(--red); font-size: 24px; text-transform: uppercase; }
+    .race-date span { display: block; margin-top: 6px; color: var(--gray); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+    .race-row h4 { font-size: 23px; text-transform: uppercase; margin-bottom: 7px; }
+    .race-row p { color: var(--gray); line-height: 1.55; }
+    .race-time { text-align: right; }
+    .race-time strong { display: block; font-size: 20px; }
+    .race-time span { display: block; color: var(--gray); margin-top: 6px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .gallery { background: #070707; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 180px;
+      gap: 16px;
+    }
+    .gallery-item { overflow: hidden; border: 1px solid var(--line); position: relative; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: .45s ease; }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-item.large { grid-column: span 7; grid-row: span 2; }
+    .gallery-item.medium { grid-column: span 5; grid-row: span 2; }
+    .gallery-item.small { grid-column: span 4; grid-row: span 2; }
+
+    .sponsors { text-align: center; }
+    .sponsor-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 42px; }
+    .sponsor {
+      padding: 24px;
+      border: 1px solid var(--line);
+      color: var(--gray);
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 1px;
+      transition: .3s ease;
+    }
+    .sponsor:hover { color: var(--white); border-color: var(--red); background: rgba(229,9,20,.08); }
+
+    .cta {
+      background:
+        linear-gradient(135deg, rgba(139,0,8,.93), rgba(8,8,8,.96) 62%),
+        url("IMAGES/Pilot-side.jpeg") center/cover no-repeat;
+    }
+    .sponsor-form-wrap {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 54px;
+      align-items: center;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    .sponsor-form-copy h2 { font-size: clamp(42px, 6vw, 72px); line-height: .95; text-transform: uppercase; margin-bottom: 22px; }
+    .sponsor-form-copy h2 span { color: var(--red); }
+    .sponsor-form-copy p { color: var(--gray); max-width: 560px; line-height: 1.75; }
+    .sponsor-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 30px;
+      background: rgba(5,5,5,.80);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+    .form-group { display: flex; flex-direction: column; gap: 8px; text-align: left; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--gray); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #0b0b0d;
+      color: var(--white);
+      padding: 14px 15px;
+      font: inherit;
+      outline: none;
+      transition: .25s ease;
+    }
+    .form-group textarea { min-height: 125px; resize: vertical; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(229,9,20,.12); }
+    .sponsor-form button { grid-column: 1 / -1; cursor: pointer; border: none; }
+    .form-note { grid-column: 1 / -1; color: var(--gray); font-size: 12px; line-height: 1.5; text-align: left; }
+
+    footer {
+      padding: 42px 7%;
+      border-top: 1px solid var(--line);
+      color: var(--gray);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      background: #030303;
+    }
+
+    @media (max-width: 1150px) {
+      .drivers .grid { grid-template-columns: repeat(2, 1fr); }
+      .sponsor-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .logo img { width: 115px; }
+      .stats, .grid, .cars, .sponsor-grid, .race-feature, .sponsor-form-wrap { grid-template-columns: 1fr; }
+      .stats { position: relative; left: auto; right: auto; bottom: auto; margin-top: 60px; }
+      .hero { padding-top: 120px; align-items: flex-start; }
+      .race-row { grid-template-columns: 1fr; gap: 12px; }
+      .race-time { text-align: left; }
+      .cta h2 { font-size: 40px; }
+      .gallery-grid { grid-template-columns: 1fr; grid-auto-rows: 300px; }
+      .gallery-item.large, .gallery-item.medium, .gallery-item.small { grid-column: auto; grid-row: auto; }
+    }
+
+    @media (max-width: 650px) {
+      section { padding: 80px 6%; }
+      .drivers .grid { grid-template-columns: 1fr; }
+      .driver-card { min-height: 520px; }
+      .section-title { font-size: 38px; }
+      .team-feature-content, .race-feature-copy { padding: 28px; }
+      .sponsor-form { grid-template-columns: 1fr; padding: 22px; }
+      .form-group.full, .sponsor-form button, .form-note { grid-column: auto; }
+      .car-box img { height: 280px; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="logo">
+      <img src="IMAGES/vgr-images-white.png" alt="Victor Gonzalez Racing Logo">
+    </div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#team">Team</a>
+      <a href="#drivers">Drivers</a>
+      <a href="#cars">Cars</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#sponsors">Sponsors</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">IMSA Michelin Pilot Challenge · TCR</div>
+      <h1>Creating <span>Champions</span></h1>
+      <p>
+        Victor Gonzalez Racing is a professional racing team competing in the IMSA Michelin Pilot Challenge TCR class.
+        Built on passion, precision, teamwork, and the pursuit of victory.
+      </p>
+      <div class="buttons">
+        <a href="#drivers" class="btn">Meet the Drivers</a>
+        <a href="#sponsors" class="btn secondary">Become a Partner</a>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><strong>2</strong><span>Race Cars</span></div>
+      <div class="stat"><strong>4</strong><span>Drivers</span></div>
+      <div class="stat"><strong>1</strong><span>Team</span></div>
+      <div class="stat"><strong>100%</strong><span>Passion</span></div>
+    </div>
+  </header>
+
+  <section id="team">
+    <h2 class="section-title">About <span>VGR</span></h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Our Mission</h3>
+        <p>To compete at the highest level while building a motorsports brand driven by excellence, discipline, family, and legacy.</p>
+      </div>
+      <div class="card">
+        <h3>Our Team</h3>
+        <p>Behind every lap is a team of drivers, engineers, mechanics, coordinators, partners, and supporters working together toward one goal.</p>
+      </div>
+      <div class="card">
+        <h3>Our Legacy</h3>
+        <p>VGR represents more than speed. It represents purpose, opportunity, and the belief that every race is a chance to build something greater.</p>
+      </div>
+    </div>
+
+    <div class="team-feature">
+      <div class="team-feature-content">
+        <h3>One Team. One Purpose.</h3>
+        <p>Every result on track is powered by the people behind the scenes. VGR brings together experienced professionals who share the same commitment to preparation, performance, and continuous improvement.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="drivers" id="drivers">
+    <h2 class="section-title">Our <span>Drivers</span></h2>
+    <div class="grid">
+      <div class="driver-card" style="background-image:url('IMAGES/tyler-gonzalez.jpeg')">
+        <div class="driver-info"><small>#99</small><h3>Tyler Gonzalez</h3><p>USA</p></div>
+      </div>
+      <div class="driver-card" style="background-image:url('IMAGES/william-tally.jpeg')">
+        <div class="driver-info"><small>#21</small><h3>William Tally</h3><p>USA</p></div>
+      </div>
+      <div class="driver-card" style="background-image:url('IMAGES/steven-clemons.jpeg')">
+        <div class="driver-info"><small>#99</small><h3>Steven Clemons</h3><p>USA</p></div>
+      </div>
+      <div class="driver-card" style="background-image:url('IMAGES/caleb-bacon.jpeg')">
+        <div class="driver-info"><small>#21</small><h3>Caleb Bacon</h3><p>USA</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cars">
+    <h2 class="section-title">Our <span>Cars</span></h2>
+    <div class="cars">
+      <div class="car-box">
+        <h3>#21 CUPRA Leon VZ TCR</h3>
+        <p>Built for precision, endurance, and aggressive racing in the IMSA Michelin Pilot Challenge.</p>
+        <img src="IMAGES/car-21-side.jpeg" alt="#21 CUPRA Leon VZ TCR">
+      </div>
+      <div class="car-box">
+        <h3>#99 CUPRA Leon VZ TCR</h3>
+        <p>A competitive TCR machine prepared by VGR for high-performance racing across North America.</p>
+        <img src="IMAGES/car-99-side.jpeg" alt="#99 CUPRA Leon VZ TCR">
+      </div>
+    </div>
+
+    <div class="race-feature">
+      <div class="race-feature-image"></div>
+      <div class="race-feature-copy">
+        <div class="eyebrow">Trackside Performance</div>
+        <h3>Built for the Fight</h3>
+        <p>From pit-lane preparation to every racing lap, VGR combines data, engineering, driver feedback, and teamwork to extract maximum performance from both CUPRA Leon VZ TCR entries.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="schedule" id="schedule">
+    <h2 class="section-title">Season <span>2026 Races</span></h2>
+    <div class="schedule-list">
+      <div class="race-row">
+        <div class="race-date"><strong>Aug 1</strong><span>Saturday</span></div>
+        <div><h4>Road America 120</h4><p>Road America · Elkhart Lake, Wisconsin</p></div>
+        <div class="race-time"><strong>1:45–3:50 PM</strong><span>Eastern Time</span></div>
+      </div>
+      <div class="race-row">
+        <div class="race-date"><strong>Aug 22</strong><span>Saturday</span></div>
+        <div><h4>VIRginia Is For Racing Lovers Grand Prix</h4><p>VIRginia International Raceway · Alton, Virginia</p></div>
+        <div class="race-time"><strong>2:10–4:15 PM</strong><span>Eastern Time</span></div>
+      </div>
+      <div class="race-row">
+        <div class="race-date"><strong>Sep 19</strong><span>Saturday</span></div>
+        <div><h4>Indianapolis Motor Speedway 120</h4><p>Indianapolis Motor Speedway · Indianapolis, Indiana</p></div>
+        <div class="race-time"><strong>2:25–4:30 PM</strong><span>Eastern Time</span></div>
+      </div>
+      <div class="race-row">
+        <div class="race-date"><strong>Oct 2</strong><span>Friday</span></div>
+        <div><h4>FOX Factory 120</h4><p>Michelin Raceway Road Atlanta · Braselton, Georgia</p></div>
+        <div class="race-time"><strong>11:40 AM–1:40 PM</strong><span>Eastern Time</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="gallery" id="gallery">
+    <h2 class="section-title">Race Weekend <span>Gallery</span></h2>
+    <div class="gallery-grid">
+      <div class="gallery-item large"><img src="IMAGES/car-99-speed.jpeg" alt="VGR number 99 CUPRA racing at speed"></div>
+      <div class="gallery-item medium"><img src="IMAGES/vgr-pit-lane.jpeg" alt="Victor Gonzalez Racing pit-lane operations"></div>
+      <div class="gallery-item small"><img src="IMAGES/Pilot-side.jpeg" alt="VGR driver preparing beside the race car"></div>
+      <div class="gallery-item small"><img src="IMAGES/car-99-angle.jpeg" alt="VGR number 99 CUPRA from a front angle"></div>
+      <div class="gallery-item small"><img src="IMAGES/vgr-team.jpeg" alt="Victor Gonzalez Racing team"></div>
+      <div class="gallery-item small"><img src="IMAGES/car-99-front.jpeg" alt="Front view of the VGR number 99 CUPRA"></div>
+      <div class="gallery-item small"><img src="IMAGES/car-99-side.jpeg" alt="Side view of the VGR number 99 CUPRA"></div>
+      <div class="gallery-item small"><img src="IMAGES/car-21-front.jpeg" alt="Front view of the VGR number 21 CUPRA"></div>
+      <div class="gallery-item small"><img src="IMAGES/car-21-side.jpeg" alt="Side view of the VGR number 21 CUPRA"></div>
+      <div class="gallery-item small"><img src="IMAGES/car-99-track.jpeg" alt="VGR number 99 CUPRA on track"></div>
+     
+    </div>
+  </section>
+
+  <section class="sponsors" id="sponsors">
+    <h2 class="section-title">Partners & <span>Sponsors</span></h2>
+    <p>Thank you to the partners that help keep VGR moving forward.</p>
+    <div class="sponsor-grid">
+      <div class="sponsor">CUPRA</div>
+      <div class="sponsor">Michelin</div>
+      <div class="sponsor">MOTUL</div>
+      <div class="sponsor">VP Racing</div>
+      <div class="sponsor">OMP</div>
+      <div class="sponsor">Sabelt</div>
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <div class="sponsor-form-wrap">
+      <div class="sponsor-form-copy">
+        <div class="eyebrow">Partner With VGR</div>
+        <h2>Become Part of <span>the Team</span></h2>
+        <p>Tell us about your company and partnership goals. Our team will review your information and contact you to discuss sponsorship opportunities with Victor Gonzalez Racing.</p>
+      </div>
+
+      <form class="sponsor-form" action="https://formsubmit.co/toledomarisol@sleepnetpr.com" method="POST">
+        <input type="hidden" name="_subject" value="New VGR Sponsorship Inquiry">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="true">
+        <input type="text" name="_honey" style="display:none">
+
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input id="name" name="Full Name" type="text" required>
+        </div>
+
+        <div class="form-group">
+          <label for="company">Company</label>
+          <input id="company" name="Company" type="text" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" name="Email" type="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input id="phone" name="Phone" type="tel">
+        </div>
+
+        <div class="form-group full">
+          <label for="interest">Partnership Interest</label>
+          <select id="interest" name="Partnership Interest" required>
+            <option value="" selected disabled>Select an option</option>
+            <option>Team Sponsorship</option>
+            <option>Car Branding</option>
+            <option>Race Weekend Hospitality</option>
+            <option>Content and Social Media Partnership</option>
+            <option>Other Partnership Opportunity</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label for="message">Tell Us About Your Goals</label>
+          <textarea id="message" name="Message" required></textarea>
+        </div>
+
+        <button type="submit" class="btn">Send Sponsorship Inquiry</button>
+        <p class="form-note">By submitting this form, you agree that VGR may contact you regarding sponsorship and partnership opportunities.</p>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 Victor Gonzalez Racing</div>
+    <div>Driven by Passion. Built on Purpose.</div>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      navbar.classList.toggle("scrolled", window.scrollY > 60);
+    });
+  </script>
+</body>
+</html>
