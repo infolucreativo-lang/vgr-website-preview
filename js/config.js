@@ -1,5 +1,5 @@
 window.VGR_CONFIG = {
-  youtubeVideoId: "T1WEHcbd9_w", // Replace with the current official IMSA YouTube video ID before each race.
+  youtubeVideoId: "vmgTujW0DGI", // Replace with the current official IMSA YouTube video ID before each race.
   youtubeChannelUrl: "https://www.youtube.com/@imsaofficial/streams",
   instagramUsername: "vgracingteam",
   elfsightAppId: "YOUR_ELFSIGHT_APP_ID", // Paste the Elfsight Instagram Feed app ID here.
